@@ -19,19 +19,29 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['logout'],
+                'only' => ['logout','create_user','registre'],
                 'rules' => [
                     [
-                        'actions' => ['logout'],
+                        'actions' => ['logout','create_user'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
+                    [
+                        'actions' => ['registre'],
+                        'allow' => true,
+                        'roles' => ['?'],
+                    ],
                 ],
+                'denyCallback' => function ($rule, $action) {
+                            //throw new \Exception('У вас нет доступа к этой странице'.$rule);
+                            $this->goHome();
+                        }
             ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'logout' => ['post'],
+                    'create_user' => ['post'],
                 ],
             ],
         ];
@@ -94,32 +104,14 @@ class SiteController extends Controller
 
         return $this->goHome();
     }
-
-    /**
-     * Displays contact page.
-     *
-     * @return string
-     */
-    public function actionContact()
-    {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-            Yii::$app->session->setFlash('contactFormSubmitted');
-
-            return $this->refresh();
-        }
-        return $this->render('contact', [
-            'model' => $model,
-        ]);
+    
+    public function actionRegistre(){
+        return $this->render('registre');
+    }
+    
+    public function actionCreateUser(){
+        
+        // обработка данных
     }
 
-    /**
-     * Displays about page.
-     *
-     * @return string
-     */
-    public function actionAbout()
-    {
-        return $this->render('about');
-    }
 }
