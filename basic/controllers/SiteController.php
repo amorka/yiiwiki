@@ -8,6 +8,8 @@ use yii\web\Controller;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use app\controllers\MainController;
+
 
 class SiteController extends Controller
 {
@@ -70,7 +72,13 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        if (!Yii::$app->user->isGuest) {
+            return $this->render('@app/views/main/index.php');
+           // return $this->goHome();
+        }else{
+            return $this->render('index');
+        }
+        
     }
 
     /**

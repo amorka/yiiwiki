@@ -8,6 +8,8 @@ use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 use app\assets\AppAsset;
+use app\components\ListFirms;
+use app\components\LoginWnd;
 
 AppAsset::register($this);
 ?>
@@ -28,18 +30,14 @@ AppAsset::register($this);
     <?php
     NavBar::begin(
         Yii::$app->user->isGuest ?([
-            'brandLabel' =>  'Wiki',
-            'brandUrl' => Yii::$app->homeUrl,
             'options' => [
                 'class' => 'navbar-inverse navbar-fixed-top',
             ]
         ]
         ):([
-            'brandLabel' =>  'Список  фирм',
-            'brandUrl' => Yii::$app->homeUrl,
             'options' => [
                 'class' => 'navbar-inverse navbar-fixed-top',
-            ]
+            ],
         ]
                     
    ));
@@ -48,8 +46,7 @@ AppAsset::register($this);
         'items' => [
             ['label' => 'Главная', 'url' => ['/site/index']],
             Yii::$app->user->isGuest ? (['label' => 'Регистрация', 'url' => ['/site/registre']]):(''),
-            Yii::$app->user->isGuest ? (
-                ['label' => 'Login', 'url' => ['/site/login']]
+            Yii::$app->user->isGuest ? (LoginWnd::widget()
             ) : (
                 '<li>'
                 . Html::beginForm(['/site/logout'], 'post', ['class' => 'navbar-form'])
@@ -62,6 +59,12 @@ AppAsset::register($this);
             )
         ],
     ]);
+    echo !Yii::$app->user->isGuest ?(
+        Nav::widget([
+            'options' => ['class' => 'navbar-nav navbar-left'],
+            'items' => [ ListFirms::widget()],
+            ])
+    ):('');
     NavBar::end();
     ?>
 
